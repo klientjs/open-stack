@@ -1,0 +1,78 @@
+name: Create a new tag and Github release
+
+on:
+  workflow_dispatch:
+    inputs:
+      type:
+        type: choice
+        description: Release type
+        required: true
+        options:
+          - patch
+          - minor
+          - major
+      preRelease:
+        type: choice
+        description: Pre release
+        required: false
+        options:
+          - ''
+          - alpha
+          - beta
+          - rc
+      node:
+        type: choice
+        description: Node version
+        required: false
+        options:
+          - ''
+          - 20.x
+          - 18.x
+          - 16.x
+          - 14.x
+          - 12.x
+      dry:
+        type: boolean
+        description: Dry mode
+        default: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.PAT || github.token }}
+      RELEASE_TYPE: ${{ github.event.inputs.type }}
+      PRE_RELEASE: ${{ github.event.inputs.preRelease }}
+      DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry-run' || '' }}
+      NODE_VERSION: ${{ github.event.inputs.node || vars.NODE_VERSION || '16.x' }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Code analysis
+        run: |
+          npm audit
+          npm run prettier
+          npm run lint
+          npm run test
+
+      - name: Configure GIT
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@github.com"
+
+      - name: Release it
+        run: |
+          if [ "$PRE_RELEASE" != "" ]; then
+            PRE_RELEASE_ARG=--preRelease=$PRE_RELEASE;
+          fi;
+
+          npm run release -- --ci --verbose $DRY_ARG $PRE_RELEASE_ARG --increment=$RELEASE_TYPE

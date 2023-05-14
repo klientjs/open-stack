@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es6",
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "dist/cjs",
+    "strict": true,
+    "removeComments": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "tests"]
+}

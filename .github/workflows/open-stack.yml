@@ -1,0 +1,71 @@
+name: Update OpenStack template files
+
+on:
+  # Uncomment following lines to enable periodically check
+  # schedule:
+  #   - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Target version
+        default: latest
+        required: true
+      node:
+        type: choice
+        description: Node version
+        required: false
+        options:
+          - ""
+          - 20.x
+          - 18.x
+          - 16.x
+          - 14.x
+          - 12.x
+      dry:
+        type: boolean
+        description: Dry mode
+        default: false
+
+permissions: write-all
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      NODE_VERSION: ${{ github.event.inputs.node || vars.NODE_VERSION || '16.x' }}
+      TARGET: ${{ github.event.inputs.version || 'latest' }}
+      BRANCH: ${{ vars.UPDATE_STACK_BRANCH || 'actions/stack-update' }}
+      REPOSITORY: ${{ secrets.UPDATE_STACK_REPOSITORY || vars.UPDATE_STACK_REPOSITORY || 'https://github.com/klientjs/open-stack.git' }}
+      DRY: ${{ github.event.inputs.dry == 'true' }}
+      REPORT: /tmp/open-stack-report.md
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Check stability
+        run: |
+          npm install
+          npm run prettier
+          npm run lint
+          npm run test
+
+      - name: Update Stack
+        run: npm run update:open-stack -- --to $TARGET --report $REPORT --repository $REPOSITORY --verbose
+
+      - name: Pre commit
+        run: npm run pre-commit
+
+      - name: Create Pull Request
+        if: env.DRY == 'false'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.PAT || github.token }}
+          title: "[STACK] Update to ${{ env.TARGET }}"
+          commit-message: "chore(stack): update to ${{ env.TARGET }}"
+          body-path: ${{ env.REPORT }}
+          branch: ${{ env.BRANCH }}
+          delete-branch: true

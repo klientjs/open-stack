@@ -1,0 +1,27 @@
+name: '📚 Documentation'
+description: Report an error or area that needs clarification.
+labels: ['doc']
+body:
+  - type: markdown
+    attributes:
+      value: 'If you found an area that needs clarification, feel free to open a PR or list the section/content that could be improved below'
+  - type: textarea
+    id: content
+    attributes:
+      label: 'Section/Content To Improve'
+      description: Quote or link to section
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: 'Suggested Improvement'
+      description: Identify what is confusing or incorrect and what could make it better
+    validations:
+      required: true
+  - type: textarea
+    id: files
+    attributes:
+      label: 'Relevant File(s)'
+      placeholder: e.g. README.md
+      render: bash

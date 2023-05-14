@@ -1,0 +1,58 @@
+name: Unpublish a tag from NPM registry
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Target version
+        required: false
+      node:
+        type: choice
+        description: Node version
+        required: false
+        options:
+          - ''
+          - 20.x
+          - 18.x
+          - 16.x
+          - 14.x
+          - 12.x
+      force:
+        type: boolean
+        description: Force
+        default: false
+      dry:
+        type: boolean
+        description: Dry mode
+        default: false
+
+jobs:
+  unpublish:
+    runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      NODE_VERSION: ${{ github.event.inputs.node || vars.NODE_VERSION || '16.x' }}
+      REGISTRY_URL: ${{ vars.REGISTRY_URL || 'https://registry.npmjs.org' }}
+      DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry-run' || '' }}
+      FORCE_ARG: ${{ github.event.inputs.force == 'true' && '--force' || '' }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Package infos
+        id: package
+        run: |
+          echo "NAME=$(cat package.json | jq '.name' -r)" >> "$GITHUB_OUTPUT"
+          echo "VERSION=$(cat package.json | jq '.version' -r)" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: ${{ env.REGISTRY_URL }}
+
+      - name: Unpublish package version
+        env:
+          PACKAGE: ${{ steps.package.outputs.NAME }}
+          VERSION: ${{ github.event.inputs.version || steps.package.outputs.VERSION }}
+        run: npm unpublish $PACKAGE@$VERSION $DRY_ARG $FORCE_ARG

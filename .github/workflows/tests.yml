@@ -1,0 +1,58 @@
+name: Code analysis
+
+on:
+  push:
+  pull_request:
+    types: [reopened]
+  workflow_dispatch:
+    inputs:
+      audit:
+        type: boolean
+        description: Run audit
+        default: false
+      node:
+        type: choice
+        description: Node version
+        required: false
+        options:
+          - ''
+          - 20.x
+          - 18.x
+          - 16.x
+          - 14.x
+          - 12.x
+
+permissions: read-all
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    env:
+      NODE_VERSION: ${{ github.event.inputs.node || vars.NODE_VERSION || '16.x' }}
+      AUDIT: ${{ github.event.inputs.audit || 'false' }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check vulnerabilities
+        if: env.AUDIT == 'true'
+        run: npm audit
+
+      - name: Prettier check
+        run: npm run prettier
+
+      - name: Linter check
+        run: npm run lint
+
+      - name: Run tests suites
+        run: npm run test
+
+      - name: Build dist files
+        run: npm run dist

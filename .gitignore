@@ -1,0 +1,8 @@
+node_modules/
+coverage/
+yarn-error.log
+yarn.lock
+package-lock.json
+.husky/
+.env
+.DS_STORE

@@ -1,0 +1,28 @@
+{
+  "git": {
+    "commitMessage": "chore(release): v${version}",
+    "addUntrackedFiles": true,
+    "tag": true,
+    "commit": true,
+    "push": true
+  },
+  "hooks": {
+    "after:bump": [
+      "npm run dist",
+      "npm run coverage:badge"
+    ]
+  },
+  "github": {
+    "release": true
+  },
+  "npm": {
+    "publish": false
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": "angular",
+      "infile": "CHANGELOG.md",
+      "header": "# Changelog"
+    }
+  }
+}

@@ -1,0 +1,112 @@
+name: Update package dependencies
+
+on:
+  # Uncomment following lines to enable periodically check
+  # schedule:
+  #   - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      target:
+        type: choice
+        description: --target
+        required: true
+        options:
+          - patch
+          - minor
+          - major
+          - latest
+          - newest
+          - greatest
+      filter:
+        description: --filter
+        required: false
+      reject:
+        description: --reject
+        required: false
+      dep:
+        description: --dep
+        required: false
+      node:
+        type: choice
+        description: Node version
+        required: false
+        options:
+          - ''
+          - 20.x
+          - 18.x
+          - 16.x
+          - 14.x
+          - 12.x
+      dry:
+        type: boolean
+        description: Dry mode
+        default: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      NODE_VERSION: ${{ github.event.inputs.node || vars.NODE_VERSION || '16.x' }}
+      TARGET: ${{ github.event.inputs.target || vars.UPDATE_DEPENDENCIES_TARGET || 'minor' }}
+      FILTER: ${{ github.event.inputs.filter }}
+      REJECT: ${{ github.event.inputs.reject }}
+      DEP: ${{ github.event.inputs.dep }}
+      DOCTOR: ${{ github.event.inputs.doctor || 'true' }}
+      DRY: ${{ github.event.inputs.dry == 'true' }}
+      BRANCH: ${{ vars.UPDATE_DEPENDENCIES_BRANCH || 'actions/dependencies-update' }}
+      REPORT_FILE: /tmp/dependencies_report
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Update dependencies
+        uses: mathiasvr/command-output@v2.0.0
+        id: update_action
+        with:
+          run: |
+            if [ "$FILTER" != "" ]; then FILTER=--filter='$FILTER'; fi;
+            if [ "$REJECT" != "" ]; then REJECT=--reject='$REJECT'; fi;
+            if [ "$DEP" != "" ]; then DEP=--dep=$DEP; fi;
+
+            npm run update:dependencies -- --upgrade --doctor --target=$TARGET $FILTER $REJECT $DEP
+
+      - name: Check vulnerabilities
+        run: npm audit
+
+      - name: Prepare report
+        env:
+          RESULT: ${{ steps.update_action.outputs.stdout }}
+        run: |
+          echo -e "## Dependencies update report
+          
+          > Please check below if npm-check-update output is stisfying.
+          > If doctor mode is enabled, you should see package unable to be upgraded.
+          > The summary at the end is a quick way to see what has been really updated.
+
+          \`\`\`
+          $RESULT
+          \`\`\`
+
+          *This message has been auto generated*
+          " > "$REPORT_FILE"
+
+      - name: Create Pull Request
+        if: env.DRY == 'false'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.PAT || github.token }}
+          title: '[DEPENDENCIES] Update ${{ env.TARGET }} versions'
+          commit-message: 'chore(dependencies): update ${{ env.TARGET }} versions'
+          branch: ${{ env.BRANCH }}
+          delete-branch: true
+          body-path: ${{ env.REPORT_FILE }}
+          add-paths: |
+            package.json
+            package-lock.json

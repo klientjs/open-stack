@@ -1,0 +1,85 @@
+name: Publish a tag to NPM registry
+
+on:
+  workflow_dispatch:
+    branch:
+      - 'refs/tags/*'
+    inputs:
+      tag:
+        type: choice
+        description: NPM tag
+        required: true
+        options:
+          - latest
+          - alpha
+          - beta
+          - rc
+      node:
+        type: choice
+        description: Node version
+        required: false
+        options:
+          - ''
+          - 20.x
+          - 18.x
+          - 16.x
+          - 14.x
+          - 12.x
+      dry:
+        type: boolean
+        description: Dry mode
+        default: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      NODE_VERSION: ${{ github.event.inputs.node || vars.NODE_VERSION || '16.x' }}
+      REGISTRY_URL: ${{ vars.REGISTRY_URL || 'https://registry.npmjs.org' }}
+      RELEASE_TAG: ${{ github.event.inputs.tag }}
+      DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry-run' || '' }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: ${{ env.REGISTRY_URL }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Publish package
+        run: npm publish --access public --tag $RELEASE_TAG $DRY_ARG
+
+  check:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.dry == 'false'
+    needs: publish
+    env:
+      NODE_VERSION: ${{ github.event.inputs.node || vars.NODE_VERSION || '16.x' }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Package infos
+        id: package
+        run: |
+          echo "NAME=$(cat package.json | jq '.name' -r)" >> "$GITHUB_OUTPUT"
+          echo "VERSION=$(cat package.json | jq '.version' -r)" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install published version
+        env:
+          PACKAGE: ${{ steps.package.outputs.NAME }}
+          VERSION: ${{ steps.package.outputs.VERSION }}
+        run: |
+          mkdir var && cd var
+          npm init --yes
+          npm install $PACKAGE@$VERSION
+          cat package.json
