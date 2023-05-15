@@ -79,7 +79,6 @@ All is configured to start development, validate code in CI, create Github relea
 - [ESLint](https://eslint.org/) (based on [Airbnb rules](https://www.npmjs.com/package/eslint-config-airbnb))
 - [Jest](https://jestjs.io/)
 - CommonJS and ESM support
-- [Docker]((#how-to-use-docker-mode)) (optional)
 
 ### Contributions
 
@@ -183,7 +182,6 @@ This action should be launched when you have decided to release a new version of
 
 This action should be launched when you want to publish a release on the NPM registry. You do not need to specify the version to publish as it will be extracted from the package.json of the selected branch. Therefore, we recommend always selecting a tag rather than a branch to launch this action. The publication takes place in several steps:
 
-- Final code testing
 - Publication using "npm publish"
 - Attempting to install the published version in a blank project.
 
