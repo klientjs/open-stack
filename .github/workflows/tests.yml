@@ -6,10 +6,6 @@ on:
     types: [reopened]
   workflow_dispatch:
     inputs:
-      audit:
-        type: boolean
-        description: Run audit
-        default: false
       node:
         type: choice
         description: Node version
@@ -29,7 +25,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NODE_VERSION: ${{ github.event.inputs.node || vars.NODE_VERSION || '16.x' }}
-      AUDIT: ${{ github.event.inputs.audit || 'false' }}
       CACHE: ${{ vars.CACHE_DEPENDENCIES != '0' && 'npm' || '' }}
     steps:
       - uses: actions/checkout@v3
@@ -44,7 +39,7 @@ jobs:
         run: npm ci
 
       - name: Check vulnerabilities
-        if: env.AUDIT == 'true'
+        continue-on-error: true
         run: npm audit
 
       - name: Prettier check

@@ -140,9 +140,7 @@ This action is launched on every commit to validate if pushed code is valid rega
 - *npm run test* : Run tests with Jest
 - *npm run dist* : Try to compile dist files
 
-And optionnally, on manual run only :
-
-- *npm audit* : Run check with ESLint
+Note that `npm audit` is run but the process will continue even if audit is not satisfying.
 
 **Events**
   - `push`
@@ -150,7 +148,6 @@ And optionnally, on manual run only :
   - `workflow_dispatch` (manual run)
 
 **Available options**
-  - Audit : y/n
   - Node version
 
 &nbsp;
