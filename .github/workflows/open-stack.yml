@@ -55,6 +55,9 @@ jobs:
           npm run lint
           npm run test
 
+      - name: Upgrade OpenStack CLI
+        run: npm upgrade @klient/open-stack-cli
+
       - name: Update Stack
         run: npm run update:open-stack -- --to $TARGET --report $REPORT --repository $REPOSITORY --verbose
 
