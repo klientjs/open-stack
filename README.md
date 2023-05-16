@@ -17,6 +17,7 @@
     + [Dangerously unpublish a tag from NPM registry](#dangerously-unpublish-a-tag-from-npm-registry)
     + [Update package dependencies](#update-package-dependencies)
     + [Update OpenStack template files](#update-openstack-template-files)
+    + [Auto cleanup PR caches](#auto-cleanup-pr-caches)
 - [Common questions](#common-questions)
   * [How to change default node version used by Github actions](#how-to-change-default-node-version-used-by-github-actions)
   * [How to change default registry url used by Github actions](#how-to-change-default-registry-url-used-by-github-actions)
@@ -36,6 +37,7 @@ This repository is a Typescript template designed for creating JS open source pr
  - Publish/unpublish a package version to NPM Registry, directly from the [Github Actions](https://github.com/features/actions) interface.
  - Update your dependencies with [npm-check-updates](https://github.com/raineorshine/npm-check-updates), directly from the [Github Actions](https://github.com/features/actions) interface.
  - Upgrade to next open-stack version by using open-stack cli, directly from the [Github Actions](https://github.com/features/actions) interface.
+ - Fast Github actions with dependencies cache management.
  - Take advantage of included [issue templates](#issues) & [PR template](#pull-request) adapted for JS projects.
  - Display a code coverage badge (no Gist or Github page required).
  - Adjust the repository defaults to suit your needs.
@@ -262,6 +264,16 @@ Unfortunately, this action is not **magic** and has its **limitations**. Your pr
   - Target version *[required]*
   - Dry mode : y/n (do not commit and open PR)
   - Node version
+
+&nbsp;
+
+#### Auto cleanup PR caches
+---
+
+This action is launched after a PR is closed to cleanup caches related to target branch.
+
+**Events**
+  - `pull_request` (closed)
 
 &nbsp;
 

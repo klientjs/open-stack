@@ -45,10 +45,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: npm
 
       - name: Check stability
         run: |
-          npm install
+          npm ci
           npm run prettier
           npm run lint
           npm run test
@@ -57,14 +58,14 @@ jobs:
         run: npm run update:open-stack -- --to $TARGET --report $REPORT --repository $REPOSITORY --verbose
 
       - name: Pre commit
-        run: npm run pre-commit
+        run: npm install && npm run pre-commit
 
       - name: Create Pull Request
         if: env.DRY == 'false'
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.PAT || github.token }}
-          title: "[STACK] Update to ${{ env.TARGET }}"
+          title: "[OPEN-STACK] Update to ${{ env.TARGET }}"
           commit-message: "chore(stack): update to ${{ env.TARGET }}"
           body-path: ${{ env.REPORT }}
           branch: ${{ env.BRANCH }}

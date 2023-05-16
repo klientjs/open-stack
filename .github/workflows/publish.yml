@@ -47,9 +47,10 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: ${{ env.REGISTRY_URL }}
+          cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Publish package
         run: npm publish --access public --tag $RELEASE_TAG $DRY_ARG
