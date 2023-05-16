@@ -46,6 +46,7 @@ jobs:
       PRE_RELEASE: ${{ github.event.inputs.preRelease }}
       DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry-run' || '' }}
       NODE_VERSION: ${{ github.event.inputs.node || vars.NODE_VERSION || '16.x' }}
+      CACHE: ${{ vars.CACHE_DEPENDENCIES != '0' && 'npm' || '' }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -55,6 +56,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: ${{ env.CACHE }}
 
       - name: Install dependencies
         run: npm ci

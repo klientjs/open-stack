@@ -39,7 +39,6 @@ jobs:
       REGISTRY_URL: ${{ vars.REGISTRY_URL || 'https://registry.npmjs.org' }}
       RELEASE_TAG: ${{ github.event.inputs.tag }}
       DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry-run' || '' }}
-      CACHE: ${{ vars.CACHE_DEPENDENCIES != '0' && 'npm' || '' }}
     steps:
       - uses: actions/checkout@v3
 
@@ -48,7 +47,6 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: ${{ env.REGISTRY_URL }}
-          cache: ${{ env.CACHE }}
 
       - name: Install dependencies
         run: npm ci
