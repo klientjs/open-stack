@@ -21,7 +21,7 @@
 - [Common questions](#common-questions)
   * [How to change default node version used by Github actions](#how-to-change-default-node-version-used-by-github-actions)
   * [How to change default registry url used by Github actions](#how-to-change-default-registry-url-used-by-github-actions)
-  * [How to disable dependencies caching in Github actions](#how-to-disable-dependencies-caching-in-github-actions)
+  * [How to enable dependencies caching in Github actions](#how-to-enable-dependencies-caching-in-github-actions)
 
 ## Introduction
 
@@ -294,6 +294,6 @@ The default registry url used is https://registry.npmjs.org. You can modify it b
 
 ---
 
-### How to disable dependencies caching in Github actions
+### How to enable dependencies caching in Github actions
 
-You can disable cache usage it by defining the `CACHE_DEPENDENCIES` variable with `0` value in repository Settings > Secrets and variables > Actions > Variables > New repository variables.
+You can enable cache usage it by defining the `CACHE_DEPENDENCIES` variable with `1` value in repository Settings > Secrets and variables > Actions > Variables > New repository variables.
