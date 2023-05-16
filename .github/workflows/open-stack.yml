@@ -38,6 +38,7 @@ jobs:
       REPOSITORY: ${{ secrets.UPDATE_STACK_REPOSITORY || vars.UPDATE_STACK_REPOSITORY || 'https://github.com/klientjs/open-stack.git' }}
       DRY: ${{ github.event.inputs.dry == 'true' }}
       REPORT: /tmp/open-stack-report.md
+      CACHE: ${{ vars.CACHE_DEPENDENCIES != '0' && 'npm' || '' }}
     steps:
       - uses: actions/checkout@v3
 
@@ -45,7 +46,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
+          cache: ${{ env.CACHE }}
 
       - name: Check stability
         run: |
