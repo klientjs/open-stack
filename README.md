@@ -48,7 +48,7 @@ This repository is a Typescript template designed for creating JS open source pr
 
 1. **Duplicate repository**
 
-    This repository is a repository template, which means that you can duplicate it from the Github interface. This will copy the files and the structure, creating only one commit (the initial commit). You can alternatively clone the template manually. ([see documentation](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template))
+    This repository is a repository template, which means that you can duplicate it from the Github interface. This will copy the files and the structure, creating only one commit (the initial commit). ([see documentation](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)). Alternatively, you can directly [use open-stack-cli for create new project](https://github.com/klientjs/open-stack-cli#create). The create command will configure you project as described on 2.b, that means you can directly go to 3. if you create project with cli.
     &nbsp;
 
 2. **Update stack files**
