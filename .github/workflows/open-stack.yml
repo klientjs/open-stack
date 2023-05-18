@@ -34,7 +34,7 @@ jobs:
     env:
       NODE_VERSION: ${{ github.event.inputs.node || vars.NODE_VERSION || '16.x' }}
       TARGET: ${{ github.event.inputs.version || 'latest' }}
-      BRANCH: ${{ vars.UPDATE_STACK_BRANCH || 'actions/stack-update' }}
+      BRANCH: ${{ vars.UPDATE_STACK_BRANCH || 'actions/open-stack-update' }}
       REPOSITORY: ${{ secrets.UPDATE_STACK_REPOSITORY || vars.UPDATE_STACK_REPOSITORY || 'https://github.com/klientjs/open-stack.git' }}
       DRY: ${{ github.event.inputs.dry == 'true' }}
       REPORT: /tmp/open-stack-report.md
@@ -52,7 +52,7 @@ jobs:
         run: npm install --ignore-scripts && npm run check
 
       - name: Upgrade OpenStack CLI
-        run: npm upgrade @klient/open-stack-cli
+        run: npm update @klient/open-stack-cli
 
       - name: Update Stack
         run: npm run update:open-stack -- --to $TARGET --report $REPORT --repository $REPOSITORY --verbose
