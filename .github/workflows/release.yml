@@ -59,7 +59,7 @@ jobs:
           cache: ${{ env.CACHE }}
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Code analysis
         run: |

@@ -49,11 +49,7 @@ jobs:
           cache: ${{ env.CACHE }}
 
       - name: Check stability
-        run: |
-          npm ci
-          npm run prettier
-          npm run lint
-          npm run test
+        run: npm install --ignore-scripts && npm run check
 
       - name: Upgrade OpenStack CLI
         run: npm upgrade @klient/open-stack-cli
@@ -62,7 +58,7 @@ jobs:
         run: npm run update:open-stack -- --to $TARGET --report $REPORT --repository $REPOSITORY --verbose
 
       - name: Pre commit
-        run: npm install && npm run pre-commit
+        run: npm install --ignore-scripts && npm run pre-commit
 
       - name: Create Pull Request
         if: env.DRY == 'false'
