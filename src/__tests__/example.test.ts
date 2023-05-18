@@ -1,4 +1,4 @@
-import example from '../src';
+import example from '..';
 
 test('example', () => {
   expect(example()).toBe('Enjoy !');

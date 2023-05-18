@@ -34,5 +34,6 @@
         "argsIgnorePattern": "^_"
       }
     ]
-  }
+  },
+  "ignorePatterns": ["src/__tests__"]
 }

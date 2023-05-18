@@ -10,5 +10,4 @@ export default {
   transform: {
     "\\.(ts)$": "ts-jest"
   },
-  testMatch: ["**/tests/**/*.test.ts"],
 };
