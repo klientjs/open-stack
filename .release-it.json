@@ -8,10 +8,7 @@
   },
   "hooks": {
     "before:init": "npm test",
-    "after:bump": [
-      "npm run dist",
-      "npm run coverage:badge"
-    ]
+    "after:bump": ["npm run dist", "npm run coverage:badge"]
   },
   "github": {
     "release": true

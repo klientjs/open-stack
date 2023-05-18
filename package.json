@@ -20,8 +20,8 @@
   "scripts": {
     "lint": "eslint src",
     "lint:fix": "eslint --fix src",
-    "prettier": "prettier src --check",
-    "prettier:fix": "prettier src -l --write",
+    "prettier": "prettier src tsconfig.json .release-it.json .prettierrc .eslintrc --check",
+    "prettier:fix": "prettier src tsconfig.json .release-it.json .prettierrc .eslintrc -l --write",
     "test": "jest --passWithNoTests",
     "dist": "rm -rf dist/* && tsc && tsc --module esnext --outDir dist/esm --moduleResolution node",
     "pre-commit": "npm run lint:fix && npm run prettier:fix && npm test",
