@@ -11,7 +11,7 @@
     "dist"
   ],
   "open-stack": {
-    "version": "1.4.2"
+    "version": "1.4.3"
   },
   "repository": {
     "url": "https://github.com/klientjs/open-stack.git",
@@ -35,7 +35,7 @@
     "prepare:pre-commit": "husky add .husky/pre-commit 'npm run check'",
     "prepare:commit-msg": "husky add .husky/commit-msg 'npx --no -- commitlint --edit ${1}'",
     "release": "release-it",
-    "configure": "open-stack configure"
+    "configure": "npm update @klient/open-stack-cli && open-stack configure"
   },
   "devDependencies": {
     "@commitlint/cli": "~17.6.1",
