@@ -7,5 +7,6 @@ export default {
   coverageReporters: ['clover', 'json', 'lcov', 'text', 'json-summary'],
   transform: {
     '\\.(ts)$': 'ts-jest'
-  }
+  },
+  testMatch: ["**/*.test.ts"],
 };
