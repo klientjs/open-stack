@@ -22,6 +22,7 @@
   * [How to change default node version used by Github actions](#how-to-change-default-node-version-used-by-github-actions)
   * [How to change default registry url used by Github actions](#how-to-change-default-registry-url-used-by-github-actions)
   * [How to enable dependencies caching in Github actions](#how-to-enable-dependencies-caching-in-github-actions)
+  * [How to install react for making web app](#how-to-install-react-for-making-web-app)
 
 ## Introduction
 
@@ -294,3 +295,16 @@ The default registry url used is https://registry.npmjs.org. You can modify it b
 ### How to enable dependencies caching in Github actions
 
 You can enable cache usage it by defining the `CACHE_DEPENDENCIES` variable with `1` value in repository Settings > Secrets and variables > Actions > Variables > New repository variables.
+
+---
+
+## How to install react for making web app
+
+You can use the **experimental** command ["setup"](https://github.com/klientjs/open-stack-cli#setup) to add react (and react-scripts) in a fresh blank open-stack project (after run npm run configure), as create-react-app does.
+
+**Caution : It will update config files like jest.config.ts, .eslintrc, tsconfig.json, package.json... These files can be potentially in conflict if you want to upgrade your open-stack files later.**
+
+```
+$ cd path/to/your/project
+$ npx open-stack setup react-app
+```
