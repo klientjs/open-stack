@@ -1,7 +1,7 @@
 export default {
   verbose: true,
   collectCoverage: true,
-  collectCoverageFrom: ['**/src/**'],
+  collectCoverageFrom: ['**/src/**', '!**/src/__tests__/**'],
   coverageDirectory: 'coverage',
   coverageProvider: 'babel',
   coverageReporters: ['clover', 'json', 'lcov', 'text', 'json-summary'],
