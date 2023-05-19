@@ -11,7 +11,7 @@
     "dist"
   ],
   "open-stack": {
-    "version": "1.4.3"
+    "version": "1.4.4"
   },
   "repository": {
     "url": "https://github.com/klientjs/open-stack.git",

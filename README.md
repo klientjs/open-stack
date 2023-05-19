@@ -173,6 +173,7 @@ This action should be launched when you have decided to release a new version of
 **Available options**
   - Release type : patch | minor | major *[required]*
   - Pre release : alpha | beta | rc
+  - Npm audit : y/n
   - Dry mode : y/n
   - Node version
 
@@ -231,6 +232,7 @@ If doctor mode is enabled, tests are run before and after the update to ensure t
   - Filter package pattern (--filter) 
   - Reject package pattern (--reject)
   - Doctor mode (--doctor)
+  - Npm audit : y/n
   - Dry mode : y/n (do not commit and open PR)
   - Node version
 

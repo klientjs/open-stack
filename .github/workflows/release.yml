@@ -31,6 +31,10 @@ on:
           - 16.x
           - 14.x
           - 12.x
+      audit:
+        type: boolean
+        description: Npm audit
+        default: true
       dry:
         type: boolean
         description: Dry mode
@@ -45,6 +49,7 @@ jobs:
       RELEASE_TYPE: ${{ github.event.inputs.type }}
       PRE_RELEASE: ${{ github.event.inputs.preRelease }}
       DRY_ARG: ${{ github.event.inputs.dry == 'true' && '--dry-run' || '' }}
+      AUDIT: ${{ github.event.inputs.audit }}
       NODE_VERSION: ${{ github.event.inputs.node || vars.NODE_VERSION || '16.x' }}
       CACHE: ${{ vars.CACHE_DEPENDENCIES != '0' && 'npm' || '' }}
     steps:
@@ -61,9 +66,12 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
+      - name: Check vulnerabilities
+        if: env.AUDIT == 'true'
+        run: npm audit
+
       - name: Code analysis
         run: |
-          npm audit
           npm run prettier
           npm run lint
           # Launched during release script

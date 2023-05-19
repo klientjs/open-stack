@@ -37,6 +37,10 @@ on:
           - 16.x
           - 14.x
           - 12.x
+      audit:
+        type: boolean
+        description: Npm audit
+        default: true
       dry:
         type: boolean
         description: Dry mode
@@ -53,6 +57,7 @@ jobs:
       DEP: ${{ github.event.inputs.dep }}
       DOCTOR: ${{ github.event.inputs.doctor || 'true' }}
       DRY: ${{ github.event.inputs.dry == 'true' }}
+      AUDIT: ${{ github.event.inputs.audit }}
       BRANCH: ${{ vars.UPDATE_DEPENDENCIES_BRANCH || 'actions/dependencies-update' }}
       CACHE: ${{ vars.CACHE_DEPENDENCIES != '0' && 'npm' || '' }}
       REPORT_FILE: /tmp/dependencies_report
@@ -80,6 +85,7 @@ jobs:
             npm run update:dependencies -- --upgrade --doctor --target=$TARGET $FILTER $REJECT $DEP
 
       - name: Check vulnerabilities
+        if: env.AUDIT == 'true'
         run: npm audit
 
       - name: Prepare report
