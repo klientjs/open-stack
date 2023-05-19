@@ -4,7 +4,7 @@
   "collectCoverageFrom": ["**/src/**", "!**/src/__tests__/**"],
   "coverageDirectory": "coverage",
   "coverageProvider": "babel",
-  "coverageReporters": ["lcov", "json-summary"],
+  "coverageReporters": ["lcov", "text", "text-summary", "json-summary"],
   "transform": {
     "\\.(ts)$": "ts-jest",
     "\\.[jt]sx?$": "babel-jest"
