@@ -6,7 +6,8 @@
   "coverageProvider": "babel",
   "coverageReporters": ["lcov", "json-summary"],
   "transform": {
-    "\\.(ts)$": "ts-jest"
+    "\\.(ts)$": "ts-jest",
+    "\\.[jt]sx?$": "babel-jest"
   },
-  "testMatch": ["**/*.test.ts"]
+  "testMatch": ["**/*.test.ts", "**/*.test.tsx"]
 }
