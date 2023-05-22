@@ -11,7 +11,7 @@
     "dist"
   ],
   "open-stack": {
-    "version": "1.5.2"
+    "version": "1.6.0"
   },
   "repository": {
     "url": "https://github.com/klientjs/open-stack.git",
@@ -23,7 +23,9 @@
     "prettier": "prettier src tsconfig.json .release-it.json .prettierrc .eslintrc --check",
     "prettier:fix": "prettier src tsconfig.json .release-it.json .prettierrc .eslintrc -l --write",
     "test": "jest --passWithNoTests",
-    "dist": "rm -rf dist/* && tsc && tsc --module esnext --outDir dist/esm --moduleResolution node",
+    "dist": "npm run dist:cjs && npm run dist:esm",
+    "dist:cjs": "rm -rf dist/cjs && tsc --outDir dist/cjs --module commonjs",
+    "dist:esm": "rm -rf dist/esm && tsc --outDir dist/esm --module esnext --moduleResolution node",
     "pre-commit": "npm run lint:fix && npm run prettier:fix && npm test",
     "check": "npm run prettier && npm run lint && npm test",
     "update:dependencies": "npm-check-updates --doctorTest \"npm test && npm run dist\"",
