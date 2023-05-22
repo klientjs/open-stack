@@ -32,6 +32,7 @@
     "update:open-stack": "open-stack update",
     "coverage:badge": "open-stack badge --output .github/badges/coverage.svg --verbose",
     "coverage:open": "open coverage/lcov-report/index.html",
+    "coverage:serve": "npx --yes http-server coverage/lcov-report",
     "prepare": "npm run prepare:reset && npm run prepare:husky",
     "prepare:reset": "rm -rf .husky && mkdir -p .husky",
     "prepare:husky": "npm run prepare:pre-commit && npm run prepare:commit-msg && husky install",
