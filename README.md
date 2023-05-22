@@ -4,12 +4,15 @@
 
 - [Introduction](#introduction)
 - [Installation](#installation)
+- [Usage](#usage)
 - [Development](#development)
   * [Stack](#stack)
   * [Contributions](#contributions)
     + [Issues and PR](#issues-and-pr)
+    + [Git hooks](#git-hooks)
     + [Guides](#guides)
 - [Maintainability](#maintainability)
+  * [Stack](#stack-1)
   * [Github actions](#github-actions)
     + [Code analysis](#code-analysis)
     + [Create a new tag and Github release](#create-a-new-tag-and-github-release)
@@ -49,7 +52,7 @@ This repository is a Typescript template designed for creating JS open source pr
 
 1. **Duplicate repository**
 
-    This repository is a repository template, which means that you can duplicate it from the Github interface. This will copy the files and the structure, creating only one commit (the initial commit). ([see documentation](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)). Alternatively, you can directly [use open-stack-cli for create new project](https://github.com/klientjs/open-stack-cli#create). The create command will configure you project as described on 2.b, that means you can directly go to 3. if you create project with cli.
+    This repository is a repository template, which means that you can duplicate it from the Github interface. This will copy the files and the structure, creating only one commit (the initial commit). ([see documentation](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)). Alternatively, you can directly [use open-stack-cli for create new project](https://github.com/klientjs/open-stack-cli#create). The create command will configure your project as described on 2.b, that means you can directly go to 3. if you create project with cli.
     &nbsp;
 
 2. **Update stack files**
@@ -74,6 +77,159 @@ This repository is a Typescript template designed for creating JS open source pr
 
 All is configured to start development, validate code in CI, create Github release and tag, and then publish versions of your package just with Github actions !
 
+## Usage
+
+```shell
+#
+# <--- CREATE NEW PROJECT WITH CLI --->
+#
+
+# Install open-stack-cli globally
+$ npm install -g @klient/open-stack-cli
+
+# Create new project based on open-stack template
+$ npx open-stack create my-project
+
+
+
+
+#
+# <--- CREATE NEW PROJECT WITH CLONE --->
+#
+
+# Clone open-stack repository
+$ git clone https://github.com/klientjs/open-stack.git my-project && cd my-project
+
+# Reset git history and create initial commit
+$ rm -rf .git && git init && git add . && git commit -m "initial commit"
+
+# Install project dependencies (including open-stack cli)
+$ npm install
+
+# Remove open-stack content and initialize files for your project (this is using cli)
+# It will ask you few questions for initializing files. This script will be removed automatically.
+$ npm run configure
+
+# Commit changes, it will run commit checks (see git hooks below)
+$ git add . && git commit -m "chore(stack): configure"
+
+
+
+
+#
+# <--- OPTIONALLY INSTALL AND CONFIGURE EXTERNAL LIBS (experimental) --->
+#
+
+# Initialize a web application project based on React library (using react-scripts)
+# (Should be run in a fresh blank project, after npm run configure, see open-stack-cli doc)
+$ npx open-stack setup react-app
+
+# Commit changes related to react-app setup step
+$ git add . && git commit -m "chore(stack): setup react-app"
+
+# Then, work with commands provided by react-scripts
+$ npm run start
+$ npm run build
+$ npm run test
+$ npm run eject
+
+
+
+
+#
+# <--- INCLUDED SCRIPTS --->
+#
+
+# [ANALYZE CODE]
+#
+# These commands are used to validate code in CI and in git hooks
+#
+$ npm run prettier
+$ npm run lint
+$ npm test
+#
+# Alternatively
+# npm run check
+
+
+# [FIX CODE]
+#
+# Fix your files as much as possible with prettier and eslint
+# (Following commands MUST be lunched before every git commit !)
+#
+$ npm run prettier:fix
+$ npm run lint:fix
+$ npm test
+#
+# Alternatively
+# npm run pre-commit
+
+
+# [BUILD CODE]
+#
+# Build dist files with tsc (with targets CommonJS & ESModule)
+# It will create final typescript and javacript content in separated files.
+#
+$ npm run dist:cjs
+$ npm run dist:esm
+#
+# Alternatively
+# npm run dist
+
+
+# [RELEASE CODE]
+#
+# Release a new version of your project using Release-it, this will :
+#   - run project test suites
+#   - update coverage badge using npm run coverage:badge
+#   - build the dist folder using npm run dist
+#   - update package.json according to version type specified
+#   - create or update a changelog file
+#   - commit changes
+#   - create a new tag on previous commit
+#   - push and then create Github release
+# (Can be used directly from Gihub actions)
+#
+$ npm run release -- --increment=minor
+
+
+# [UPDATE DEPENDENCIES]
+#
+# Update project dependencies using npm-check-updates
+# The following command will attempts to update 
+# each dependencies and check validity by running tests before and after update.
+# (Can be used directly from Gihub actions, changes are submitted in a PR)
+#
+$ npm run update:dependencies -- --target=minor --doctor --upgrade
+
+
+# [UPDATE OPEN-STACK FILES]
+#
+# Update open-stack files by sync changes with specified version (updated by cli)
+# (Can be used directly from Gihub actions, changes are submitted in a PR)
+#
+$ npm run update:open-stack -- --to=1.5.0 --verbose --report update_report.md
+
+
+# [OPEN TEST COVERAGE REPORT]
+#
+# Open html coverage report in a browser using "open" binary (must be locally available)
+#
+$ npm run coverage:open
+#
+# Alternatively, you can expose http port using http-server for consulting html report
+# It's useful if you are using distant environment such as codespace
+#
+$ npm run coverage:serve -- --port 8888
+
+
+# [CREATE COVERAGE BADGE]
+#
+# Create the coverage badge based on report generated on last npm test (generated by cli)
+# (Mainly used for release process)
+$ npm run coverage:badge
+```
+
 ## Development
 
 ### Stack
@@ -82,7 +238,6 @@ All is configured to start development, validate code in CI, create Github relea
 - [Prettier](https://prettier.io/)
 - [ESLint](https://eslint.org/) (based on [Airbnb rules](https://www.npmjs.com/package/eslint-config-airbnb))
 - [Jest](https://jestjs.io/)
-- CommonJS and ESM support
 
 ### Contributions
 
@@ -103,6 +258,26 @@ This repository also contains a [simple PR template](./.github/PULL_REQUEST_TEMP
 
 You are free to add, modify or delete these templates as you need (see [github](./.github) folder).
 
+#### Git hooks
+
+By default, 2 git hooks are setup by Husky package when "npm install" is launched : one for testing code changes, and another for lint commit message. It can be disabled on need. See [husky](https://github.com/typicode/husky) documentation for more informations.
+
+```shell
+# Clone a project based on open-stack template
+$ git clone https://github.com/klientjs/example.git && cd example
+
+# Just install, it will initialize git hooks with Husky
+$ npm install
+
+# ... Make changes in your IDE ...
+#
+# Commit your changes. By using git hooks, this will :
+#   - check files with eslint, prettier and Jest
+#   - check commit message using @commitlint/config-conventional
+#
+$ git add . && git commit -m "feat: change the world just with code"
+```
+
 #### Guides
 
 - [Contribution guide](./CONTRIBUTING.md)
@@ -117,6 +292,13 @@ Stable version  >  Development  >  Testing  >  Release  >  Publication
 ```
 
 All of these steps are managed by Github actions, which means that you will only have to click a few buttons to trigger the creation of a new release, as well as its publication.
+
+### Stack
+
+- [husky](https://github.com/typicode/husky)
+- [release-it](https://github.com/release-it/release-it)
+- [npm-check-updates](https://github.com/raineorshine/npm-check-updates)
+- [open-stack-cli](https://github.com/klientjs/open-stack-cli.git)
 
 ### Github actions
 
@@ -300,7 +482,7 @@ You can enable cache usage it by defining the `CACHE_DEPENDENCIES` variable with
 
 ---
 
-## How to install react for making web app
+### How to install react for making web app
 
 You can use the **experimental** command ["setup"](https://github.com/klientjs/open-stack-cli#setup) to add react (and react-scripts) in a fresh blank open-stack project (after run npm run configure), as create-react-app does.
 
