@@ -25,7 +25,9 @@
   * [How to change default node version used by Github actions](#how-to-change-default-node-version-used-by-github-actions)
   * [How to change default registry url used by Github actions](#how-to-change-default-registry-url-used-by-github-actions)
   * [How to enable dependencies caching in Github actions](#how-to-enable-dependencies-caching-in-github-actions)
-  * [How to install react for making web app](#how-to-install-react-for-making-web-app)
+  * [How to specify name of branch created by Github actions](#how-to-specify-name-of-branch-created-by-github-actions)
+  * [How to install React for making web app](#how-to-install-react-for-making-web-app)
+  * [How to install React for making components library](#how-to-install-react-for-making-components-library)
 
 ## Introduction
 
@@ -52,7 +54,7 @@ This repository is a Typescript template designed for creating JS open source pr
 
 1. **Duplicate repository**
 
-    This repository is a repository template, which means that you can duplicate it from the Github interface. This will copy the files and the structure, creating only one commit (the initial commit). ([see documentation](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)). Alternatively, you can directly [use open-stack-cli for create new project](https://github.com/klientjs/open-stack-cli#create). The create command will configure your project as described on 2.b, that means you can directly go to 3. if you create project with cli.
+    This repository is a repository template, which means that you can duplicate it from the Github interface. This will copy the files and the structure, creating only one commit (the initial commit). ([see documentation](https://docs.github.com/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)). Alternatively, you can directly [use open-stack-cli for create new project](https://github.com/klientjs/open-stack-cli#create). The create command will configure your project as described on 2.b, that means you can directly go to 3. if you create project with cli.
     &nbsp;
 
 2. **Update stack files**
@@ -66,14 +68,14 @@ This repository is a Typescript template designed for creating JS open source pr
 
 3. **Configure Github repository for [creating release and tag](#create-a-new-tag-and-github-release)**
 
-    Go to your repository Settings > Actions > General > Workflow permissions > Enable `GITHUB_TOKEN` read and write permissions. ([see documentation](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#setting-the-permissions-of-the-github_token-for-your-repository)). We strongly recommand you to configure also a personnal access token and set it in repository Settings > Secrets and variables > Actions > Secrets > New repository secret, and define the secret `PAT` (containing the generated PAT) ([see documentation](https://docs.github.com/en/authentication/.keeping-your-account-and-data-secure/creating-a-personal-access-token)).
+    Go to your repository Settings > Actions > General > Workflow permissions > Enable `GITHUB_TOKEN` read and write permissions. ([see documentation](https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#setting-the-permissions-of-the-github_token-for-your-repository)). We strongly recommand you to configure also a personnal access token and set it in repository Settings > Secrets and variables > Actions > Secrets > New repository secret, and define the secret `PAT` (containing the generated PAT) ([see documentation](https://docs.github.com/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)).
     &nbsp;
 
 4. **Configure Github repository for [publishing package](#publish-a-tag-to-npm-registry)**
 
     a) Go to your NPM registry and create a token with authorized publish action. ([See documentation](https://docs.npmjs.com/creating-and-viewing-access-tokens))
 
-    b) Go to your repository Settings > Secrets and variables > Actions > Secrets > New repository secret, and define the secret `NPM_TOKEN` with the token you have configured. ([see documentation](https://docs.github.com/en/actions/security-guides/encrypted-secrets))
+    b) Go to your repository Settings > Secrets and variables > Actions > Secrets > New repository secret, and define the secret `NPM_TOKEN` with the token you have configured. ([see documentation](https://docs.github.com/actions/security-guides/encrypted-secrets))
 
 All is configured to start development, validate code in CI, create Github release and tag, and then publish versions of your package just with Github actions !
 
@@ -241,7 +243,7 @@ $ npm run coverage:badge
 
 ### Contributions
 
-To take full advantage of all the features offered by this repository, you must follow the conventions adopted by it. This mainly happens during development, using commit messages based on [Angular commit naming rules](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commits). With this specific formatting, automatic management of a beautiful changelog is made possible. We recommend that you use these rules as much as possible, to make the most complete changelog for each release.
+To take full advantage of all the features offered by this repository, you must follow the conventions adopted by it. This mainly happens during development, using commit messages based on [Conventionnal commits rules](https://www.conventionalcommits.org/). With this specific formatting, automatic management of a beautiful changelog is made possible. We recommend that you use these rules as much as possible, to make the most complete changelog for each release.
 
 #### Issues and PR
 
@@ -305,8 +307,9 @@ All of these steps are managed by Github actions, which means that you will only
 The Github actions mentioned below will allow you to manage your package's entire workflow, from development to publication. They should be naturally launched in the order in which they are defined below :
 
 1. PR are submitted and [automatically tested in CI jobs](#code-analysis) (all commits).
-2. Your main branch is ahead by several commits and you want to [release a new version of your code](#create-a-new-github-tag-and-release).
-3. You [publish your new revision](#publish-a-tag-to-npm-registry) (created in the previous step) to NPM registry.
+2. Branches are merged in main version branch
+3. The main branch is ahead by several commits and you want to [release a new version of your code](#create-a-new-github-tag-and-release).
+4. Finally you [publish your new revision](#publish-a-tag-to-npm-registry) (created in the previous step) to NPM registry.
 
 *You can find following actions in "Actions" tab of your repository.*
 
@@ -431,7 +434,7 @@ This action will allow you to update your repository files with open-stack templ
 2. Clone the latest known version of the template you used: The version number will be retrieved from the [package.json](./.github/package.json#L14) file.
 3. Clone the next version of the template you want to use.
 4. Update your package.json: The `scripts`, `devDependencies`, keys will attempt to be synchronized by comparing the state of your file with the previous and new versions.
-5. Update the files that need to be synchronized: The list of files will be retrieved from the [open-stack.json](./.github/open-stack.json#L3) file.
+5. Update the files that need to be synchronized (in manual mode, you can specify files you want to sync)
 6. Update the code syntax: Prettier and ESLint will be run.
 7. A complete report will be generated with any conflicts that may arise.
 8. A Pull Request will be opened containing the modifications and the report.
@@ -482,7 +485,13 @@ You can enable cache usage it by defining the `CACHE_DEPENDENCIES` variable with
 
 ---
 
-### How to install react for making web app
+### How to specify name of branch created by Github actions
+
+You can change default branches naming created by Github actions, by defining the `UPDATE_STACK_BRANCH` (for stack update action) and `UPDATE_DEPENDENCIES_BRANCH` (for dependencies update) variables with branch name you want in repository Settings > Secrets and variables > Actions > Variables > New repository variables.
+
+---
+
+### How to install React for making web app
 
 You can use the **experimental** command ["setup"](https://github.com/klientjs/open-stack-cli#setup) to add react (and react-scripts) in a fresh blank open-stack project (after run npm run configure), as create-react-app does.
 
@@ -491,4 +500,15 @@ You can use the **experimental** command ["setup"](https://github.com/klientjs/o
 ```
 $ cd path/to/your/project
 $ npx open-stack setup react-app
+```
+
+---
+
+### How to install React for making components library
+
+You can use the **experimental** command ["setup"](https://github.com/klientjs/open-stack-cli#setup) to add React implementation (jsx support, no react-scripts) in a project which will be published to npm registry.
+
+```
+$ cd path/to/your/project
+$ npx open-stack setup react
 ```
